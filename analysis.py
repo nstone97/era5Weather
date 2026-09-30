@@ -234,13 +234,26 @@ def catalog_status(catalog: Catalog) -> dict:
     }
 
 
+def _cds_verify() -> bool:
+    env = os.environ.get("CDSAPI_VERIFY")
+    if env is not None:
+        return env.strip().lower() not in {"0", "false", "no"}
+    rc_path = Path(os.environ.get("CDSAPI_RC", Path.home() / ".cdsapirc"))
+    if rc_path.exists():
+        for line in rc_path.read_text(encoding="utf-8").splitlines():
+            if line.strip().startswith("verify:"):
+                return bool(int(line.split(":", 1)[1].strip()))
+    return True
+
+
 def _cds_client():
     import cdsapi
 
+    verify = _cds_verify()
     key = os.environ.get("CDSAPI_KEY")
     if key:
-        return cdsapi.Client(url=CDS_URL, key=key)
-    return cdsapi.Client()
+        return cdsapi.Client(url=CDS_URL, key=key, verify=verify)
+    return cdsapi.Client(verify=verify)
 
 
 def download_era5(

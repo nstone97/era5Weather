@@ -6,3 +6,4 @@ numpy
 cdsapi
 matplotlib
 jupyter
+pip-system-certs

@@ -41,7 +41,21 @@ CDS nearest-neighbor extraction lands wave and atmosphere on **different** grid 
 
 `fg10` is missing for all 24 hours of **1940-01-01** (ERA5 gusts start the next day). `swh`, `u10`, and `v10` are complete.
 
-A CDS retrieve returns a zip of two NetCDFs (wave vs surface). Put credentials in `~/.cdsapirc` or `CDSAPI_KEY` — do not commit keys.
+A CDS retrieve returns a zip of two NetCDFs (wave vs surface). Put credentials in `~/.cdsapirc` (Windows: `C:\Users\<you>\.cdsapirc`) or `CDSAPI_KEY` — do not commit keys.
+
+If Windows Python raises `CERTIFICATE_VERIFY_FAILED` / `self-signed certificate in certificate chain`, a proxy or antivirus is intercepting HTTPS. Either:
+
+```text
+url: https://cds.climate.copernicus.eu/api
+key: your-key
+verify: 0
+```
+
+or, better, teach Python to use the Windows cert store:
+
+```bat
+pip install pip-system-certs
+```
 
 ## Notebook flow
 
