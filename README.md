@@ -12,7 +12,7 @@ source .venv/bin/activate
 python app.py
 ```
 
-Then open http://127.0.0.1:5000. The app loads the cached ERA5 extract, lets you change wave/wind thresholds, shows one table per month, and can pull a new CDS zip in the background.
+Then open http://127.0.0.1:5000. The app loads the cached ERA5 extract, lets you change wave/wind thresholds, shows one table per month, can export CSV or a location-headed PDF, and can pull a new CDS zip in the background.
 
 Working notebook: [`wavedata.ipynb`](wavedata.ipynb). Figure: [`monthly_wave_wind_exceedance.png`](monthly_wave_wind_exceedance.png).
 
@@ -97,8 +97,9 @@ Winter months are the roughest at moderate thresholds. July–August are the cal
 
 | Path | Role |
 |---|---|
-| `app.py` | Flask app: dashboard + JSON/CSV API |
+| `app.py` | Flask app: dashboard + JSON/CSV/PDF API |
 | `analysis.py` | ERA5 load, unit conversion, exceedance math |
+| `pdf_report.py` | Landscape PDF of the 12 monthly tables |
 | `templates/`, `static/` | Frontend |
 | `wavedata.ipynb` | Same pipeline as a notebook |
 | `monthly_wave_wind_exceedance.png` | 12 monthly wave-or-wind exceedance tables |

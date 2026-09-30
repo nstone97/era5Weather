@@ -6,6 +6,7 @@ import io
 from flask import Flask, Response, jsonify, render_template, request
 
 import analysis
+import pdf_report
 
 app = Flask(__name__)
 app.json.sort_keys = False
@@ -80,6 +81,32 @@ def exceedance_csv():
         mimetype="text/csv",
         headers={"Content-Disposition": "attachment; filename=monthly_exceedance.csv"},
     )
+
+
+@app.get("/api/exceedance.pdf")
+def exceedance_pdf():
+    try:
+        wave_max, wave_step, wind_max, wind_step = _threshold_args()
+        catalog = analysis.get_catalog()
+        payload = analysis.monthly_exceedance(
+            catalog.hours,
+            wave_max=wave_max,
+            wave_step=wave_step,
+            wind_max=wind_max,
+            wind_step=wind_step,
+        )
+        status = analysis.catalog_status(catalog)
+        pdf_bytes = pdf_report.build_pdf(payload, status)
+        name = pdf_report.filename(status)
+        return Response(
+            pdf_bytes,
+            mimetype="application/pdf",
+            headers={"Content-Disposition": f'attachment; filename="{name}"'},
+        )
+    except FileNotFoundError as exc:
+        return jsonify({"error": str(exc)}), 404
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
 
 
 @app.post("/api/refresh")

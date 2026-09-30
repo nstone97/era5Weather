@@ -107,6 +107,7 @@ function renderTables() {
 async function loadExceedance() {
   const params = formParams();
   qs("#csv-link").href = `/api/exceedance.csv?${params.toString()}`;
+  qs("#pdf-link").href = `/api/exceedance.pdf?${params.toString()}`;
   qs("#tables").innerHTML = "<p>Computing exceedance…</p>";
   const response = await fetch(`/api/exceedance?${params.toString()}`);
   const data = await response.json();

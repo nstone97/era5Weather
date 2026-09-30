@@ -7,3 +7,4 @@ cdsapi
 matplotlib
 jupyter
 pip-system-certs
+reportlab
