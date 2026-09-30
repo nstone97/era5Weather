@@ -1,0 +1,12 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+.cdsapirc
+tmp/
+*.zip
+*.nc
+.ipynb_checkpoints/
+.pytest_cache/

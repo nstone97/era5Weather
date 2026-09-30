@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gulf wave climatology</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+  <a class="skip" href="#tables">Skip to tables</a>
+  <header class="mast">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 64 40" aria-hidden="true">
+        <path d="M2 28c6-10 12-16 20-16s12 10 20 10 12-14 20-14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        <path d="M2 34c8-6 14-8 22-8s14 8 22 8 10-6 16-6" fill="none" stroke="currentColor" stroke-width="2" opacity="0.55" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <p class="eyebrow">ERA5 · Mississippi Delta</p>
+        <h1>Wave &amp; wind exceedance</h1>
+      </div>
+    </div>
+    <p class="lede" id="location-line">Loading site…</p>
+  </header>
+
+  <main>
+    <section class="stats" id="stats" aria-label="Series summary"></section>
+
+    <section class="toolbar" aria-label="Thresholds">
+      <form id="controls">
+        <label>Wave max (ft)
+          <input name="wave_max" type="number" min="0" max="40" step="1" value="16">
+        </label>
+        <label>Wave step
+          <input name="wave_step" type="number" min="1" max="8" step="1" value="2">
+        </label>
+        <label>Wind max (kt)
+          <input name="wind_max" type="number" min="0" max="80" step="1" value="35">
+        </label>
+        <label>Wind step
+          <input name="wind_step" type="number" min="1" max="10" step="1" value="5">
+        </label>
+        <button type="submit">Update tables</button>
+        <a class="ghost" id="csv-link" href="/api/exceedance.csv">Download CSV</a>
+      </form>
+      <p class="hint">Each cell is the percent of hours when significant wave height <strong>or</strong> 10&nbsp;m sustained wind exceeds that pair of thresholds.</p>
+    </section>
+
+    <nav class="months" id="months" aria-label="Calendar month"></nav>
+
+    <p class="readout" id="readout" aria-live="polite">Click a cell for a plain-language reading.</p>
+
+    <section id="tables" class="tables" aria-live="polite"></section>
+
+    <section class="method">
+      <h2>How this is built</h2>
+      <p>
+        Hourly ECMWF ERA5 at one requested point (28.662°N, 89.551°W). Wave height comes from the 0.5° wave grid;
+        10&nbsp;m wind from the 0.25° atmosphere grid. The two series are joined on time only.
+        Heights are converted to feet, wind to knots. Gusts are stored in the extract but the tables use sustained wind <code>s10</code>.
+      </p>
+    </section>
+
+    <section class="refresh" id="refresh">
+      <h2>Refresh from Copernicus CDS</h2>
+      <p>Pulls a new timeseries zip. This can take several minutes. Credentials come from <code>CDSAPI_KEY</code> or <code>~/.cdsapirc</code>.</p>
+      <form id="refresh-form">
+        <label>Latitude
+          <input name="latitude" type="number" step="0.001" value="28.662">
+        </label>
+        <label>Longitude
+          <input name="longitude" type="number" step="0.001" value="-89.551">
+        </label>
+        <label>Start
+          <input name="date_start" type="date" value="1940-01-01">
+        </label>
+        <label>End
+          <input name="date_end" type="date" value="2026-09-30">
+        </label>
+        <button type="submit">Download latest</button>
+      </form>
+      <p class="refresh-status" id="refresh-status"></p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Local Flask app over the ERA5 extract in this workspace.</p>
+  </footer>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
